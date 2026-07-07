@@ -1,0 +1,48 @@
+{
+  "name": "@harmus/tui",
+  "version": "0.1.0",
+  "description": "Terminal UI for Harmus — autonomous coding agent",
+  "type": "module",
+  "bin": {
+    "harmus-tui": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aarvsn/harmus.git",
+    "directory": "packages/tui"
+  },
+  "homepage": "https://github.com/aarvsn/harmus",
+  "bugs": { "url": "https://github.com/aarvsn/harmus/issues" },
+  "author": { "name": "aarvsn", "url": "https://github.com/aarvsn" },
+  "license": "MIT",
+  "keywords": [
+    "ai", "agent", "tui", "terminal", "ink", "cli", "llm", "autonomous"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@harmus/core": "*",
+    "ink": "^7.1.0",
+    "ink-text-input": "^6.0.0",
+    "ink-spinner": "^5.0.0",
+    "react": "^19.2.7"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "tsx": "^4.19.1",
+    "@types/node": "^22.7.5",
+    "@types/react": "^19.2.7",
+    "ink-testing-library": "^4.0.0"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22"
+  }
+}

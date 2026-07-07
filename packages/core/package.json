@@ -1,0 +1,47 @@
+{
+  "name": "@harmus/core",
+  "version": "0.1.0",
+  "description": "Provider abstraction, tool execution engine, and agent runtime for Harmus",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aarvsn/harmus.git",
+    "directory": "packages/core"
+  },
+  "homepage": "https://github.com/aarvsn/harmus",
+  "bugs": { "url": "https://github.com/aarvsn/harmus/issues" },
+  "author": { "name": "aarvsn", "url": "https://github.com/aarvsn" },
+  "license": "MIT",
+  "keywords": [
+    "ai", "agent", "coding-agent", "llm", "anthropic", "openai",
+    "autonomous", "typescript", "terminal", "cli"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "node --import tsx --test \"src/**/__tests__/*.test.ts\"",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "zod": "^3.23.8",
+    "@anthropic-ai/sdk": "^0.105.0",
+    "openai": "^6.44.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "tsx": "^4.19.1",
+    "@types/node": "^22.7.5"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ]
+}

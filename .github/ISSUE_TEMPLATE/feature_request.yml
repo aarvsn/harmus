@@ -1,0 +1,57 @@
+name: Feature Request
+description: Propose a new feature or improvement
+labels: [enhancement]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Feature requests are welcome. Describe the problem you're solving — not just the solution.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What problem does this solve? What can't you do today?
+      placeholder: "When working on large monorepos, Harmus doesn't understand which packages are affected by a change, so its plans are imprecise."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Your idea for solving the problem.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Any other approaches you've thought about?
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Tools (new built-in tool)
+        - Provider (new LLM provider)
+        - TUI (terminal UI)
+        - CLI
+        - Discord bot
+        - Plugin system
+        - Agent loop / context management
+        - Repo indexer
+        - Documentation
+        - Other
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and this is not a duplicate
+          required: true
+        - label: I would be willing to submit a PR for this

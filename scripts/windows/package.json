@@ -1,0 +1,15 @@
+{
+  "name": "harmus-windows-installer",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc -p tsconfig.json && pkg dist/installer.js --target node22-win-x64 --output ../../dist/harmus-init.exe --compress GZip",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "@types/node": "^22.7.5",
+    "pkg": "^5.8.1"
+  }
+}

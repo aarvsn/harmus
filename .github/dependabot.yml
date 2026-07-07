@@ -1,0 +1,40 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "08:00"
+    groups:
+      typescript-toolchain:
+        patterns:
+          - "typescript"
+          - "tsx"
+          - "@types/*"
+      testing:
+        patterns:
+          - "ink-testing-library"
+      minor-and-patch:
+        update-types:
+          - minor
+          - patch
+    ignore:
+      - dependency-name: "@anthropic-ai/sdk"
+        update-types: ["version-update:semver-major"]
+      - dependency-name: "openai"
+        update-types: ["version-update:semver-major"]
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - automated
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+    labels:
+      - dependencies
+      - github-actions

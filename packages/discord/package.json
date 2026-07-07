@@ -1,0 +1,43 @@
+{
+  "name": "@harmus/discord",
+  "version": "0.1.0",
+  "description": "Discord bot for Harmus — autonomous coding agent",
+  "type": "module",
+  "bin": {
+    "harmus-discord": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aarvsn/harmus.git",
+    "directory": "packages/discord"
+  },
+  "homepage": "https://github.com/aarvsn/harmus",
+  "bugs": { "url": "https://github.com/aarvsn/harmus/issues" },
+  "author": { "name": "aarvsn", "url": "https://github.com/aarvsn" },
+  "license": "MIT",
+  "keywords": [
+    "ai", "agent", "discord", "bot", "llm", "autonomous", "coding"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@harmus/core": "*",
+    "discord.js": "^14.16.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3",
+    "tsx": "^4.19.1",
+    "@types/node": "^22.7.5"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=22"
+  }
+}

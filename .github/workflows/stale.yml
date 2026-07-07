@@ -1,0 +1,36 @@
+name: Stale
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  stale:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/stale@v9
+        with:
+          stale-issue-message: >
+            This issue has been automatically marked as stale because it has had
+            no activity in the last 30 days. It will be closed in 7 days if no
+            further activity occurs. If this issue is still relevant, please
+            leave a comment or remove the `stale` label.
+          stale-pr-message: >
+            This PR has been automatically marked as stale because it has had
+            no activity in the last 14 days. It will be closed in 7 days if
+            no further activity occurs. Please rebase and update if you'd like
+            to continue.
+          close-issue-message: "Closed due to inactivity. Reopen if still relevant."
+          close-pr-message: "Closed due to inactivity. Feel free to reopen."
+          days-before-stale: 30
+          days-before-close: 7
+          days-before-pr-stale: 14
+          stale-issue-label: stale
+          stale-pr-label: stale
+          exempt-issue-labels: "pinned,security,bug"
+          exempt-pr-labels: "pinned,security"

@@ -1,0 +1,43 @@
+{
+  "name": "harmus",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Autonomous coding agent for your terminal",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aarvsn/harmus.git"
+  },
+  "homepage": "https://github.com/aarvsn/harmus",
+  "bugs": {
+    "url": "https://github.com/aarvsn/harmus/issues"
+  },
+  "author": {
+    "name": "aarvsn",
+    "url": "https://github.com/aarvsn"
+  },
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces --if-present",
+    "test": "npm run test:core && npm run test:cli",
+    "test:core": "cd packages/core && node --import tsx --test \"src/**/__tests__/*.test.ts\"",
+    "test:cli": "cd packages/cli && node --import tsx --test \"src/**/__tests__/*.test.ts\"",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "clean": "find packages -name dist -type d -exec rm -rf {} + 2>/dev/null; true",
+    "build:windows-installer": "cd scripts/windows && npm ci && npm run build"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.0",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^10.0.0",
+    "@semantic-release/npm": "^12.0.1",
+    "@semantic-release/release-notes-generator": "^14.0.0",
+    "semantic-release": "^24.0.0"
+  }
+}

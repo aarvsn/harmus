@@ -1,0 +1,90 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build all packages
+        run: npm run build
+
+      - name: Run tests
+        run: npm test
+
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
+
+  build-binaries:
+    name: Build Native Binaries
+    runs-on: ${{ matrix.os }}
+    needs: release
+    if: needs.release.result == 'success'
+    strategy:
+      matrix:
+        include:
+          - os: ubuntu-latest
+            target: linux-x64
+            artifact: harmus-linux-x64
+          - os: macos-latest
+            target: macos-x64
+            artifact: harmus-macos-x64
+          - os: macos-latest
+            target: macos-arm64
+            artifact: harmus-macos-arm64
+          - os: windows-latest
+            target: win-x64
+            artifact: harmus-win-x64.exe
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+
+      - name: Package binary
+        run: |
+          npx pkg packages/cli/dist/index.js \
+            --target node22-${{ matrix.target }} \
+            --output dist/${{ matrix.artifact }} \
+            --compress GZip || echo "pkg not available, skipping"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: dist/${{ matrix.artifact }}
+          if-no-files-found: ignore

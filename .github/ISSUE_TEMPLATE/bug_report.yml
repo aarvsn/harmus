@@ -1,0 +1,108 @@
+name: Bug Report
+description: Something isn't working correctly
+labels: [bug, needs-triage]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to file a bug report. Please fill this out thoroughly — vague reports are difficult to act on.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear description of what went wrong.
+      placeholder: Harmus crashes when I run `harmus build "add tests"` on a Python project.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Exact commands and project structure to reproduce the issue.
+      placeholder: |
+        1. Create a Python project with `pyproject.toml`
+        2. Run `harmus plan "add pytest tests"`
+        3. See error: ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should have happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened? Paste full terminal output including the error.
+      render: shell
+    validations:
+      required: true
+
+  - type: input
+    id: harmus-version
+    attributes:
+      label: Harmus Version
+      description: Output of `harmus --version`
+      placeholder: "0.3.1"
+    validations:
+      required: true
+
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js Version
+      description: Output of `node --version`
+      placeholder: "v22.5.1"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - macOS
+        - Linux
+        - Windows
+    validations:
+      required: true
+
+  - type: dropdown
+    id: provider
+    attributes:
+      label: Provider
+      options:
+        - Anthropic
+        - OpenAI
+        - Google Gemini
+        - Groq
+        - Together AI
+        - Fireworks AI
+        - xAI
+        - OpenRouter
+        - NVIDIA NIM
+        - Moonshot AI
+        - Ollama
+        - LM Studio
+        - Other / N/A
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and this is not a duplicate
+          required: true
+        - label: I am using Node.js ≥ 22
+          required: true

@@ -39,9 +39,7 @@ test("end-to-end: AnthropicProvider + real fs tools + agent loop edits a real fi
     const client = scriptedAnthropicClient([
       // Turn 1: model reads the file
       {
-        content: [
-          { type: "tool_use", id: "toolu_1", name: "read_file", input: { path: "greeting.ts" } },
-        ],
+        content: [{ type: "tool_use", id: "toolu_1", name: "read_file", input: { path: "greeting.ts" } }],
         stop_reason: "tool_use",
         usage: { input_tokens: 10, output_tokens: 5 },
       },

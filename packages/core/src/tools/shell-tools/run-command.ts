@@ -3,7 +3,7 @@ import { spawn } from "node:child_process";
 import type { ToolDefinition } from "../../types/tool.js";
 
 const RunCommandSchema = z.object({
-  command: z.string().describe("The shell command to execute, e.g. \"npm test\" or \"git status\""),
+  command: z.string().describe('The shell command to execute, e.g. "npm test" or "git status"'),
   cwd: z
     .string()
     .optional()

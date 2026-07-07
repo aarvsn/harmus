@@ -62,10 +62,7 @@ test("edit_file can delete text when newStr is omitted", async () => {
   const repo = await makeTempRepo();
   try {
     await writeFile(path.join(repo, "a.ts"), "keep this\nremove this\nkeep this too\n");
-    const result = await editFileTool.execute(
-      { path: "a.ts", oldStr: "remove this\n" },
-      buildCtx(repo),
-    );
+    const result = await editFileTool.execute({ path: "a.ts", oldStr: "remove this\n" }, buildCtx(repo));
     assert.equal(result.isError, undefined);
     const updated = await readFile(path.join(repo, "a.ts"), "utf-8");
     assert.equal(updated, "keep this\nkeep this too\n");

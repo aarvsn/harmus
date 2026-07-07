@@ -18,17 +18,9 @@ export interface RepoIndex {
  * produces a concise text summary for the agent's context window.
  */
 export async function indexRepository(cwd: string): Promise<RepoIndex> {
-  const [profile, graph] = await Promise.all([
-    detectFrameworks(cwd),
-    buildDependencyGraph(cwd),
-  ]);
+  const [profile, graph] = await Promise.all([detectFrameworks(cwd), buildDependencyGraph(cwd)]);
 
-  const summary = [
-    `Repository: ${cwd}`,
-    describeProfile(profile),
-    "",
-    summarizeGraph(graph, cwd),
-  ].join("\n");
+  const summary = [`Repository: ${cwd}`, describeProfile(profile), "", summarizeGraph(graph, cwd)].join("\n");
 
   return { cwd, profile, graph, summary, builtAt: new Date() };
 }

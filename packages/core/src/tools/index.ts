@@ -13,4 +13,3 @@ export * from "./git-tools/index.js";
 
 /** Every built-in tool Harmus ships with, ready to register with an agent. */
 export const ALL_TOOLS: AnyToolDefinition[] = [...FILE_TOOLS, ...SEARCH_TOOLS, ...SHELL_TOOLS, ...GIT_TOOLS];
-

@@ -79,9 +79,7 @@ export async function handleAgentCommand(
       }
     }
 
-    const toolSummary = toolLines.length > 0
-      ? `**Tools used:**\n${toolLines.slice(-10).join("\n")}\n\n`
-      : "";
+    const toolSummary = toolLines.length > 0 ? `**Tools used:**\n${toolLines.slice(-10).join("\n")}\n\n` : "";
 
     const fullResponse = toolSummary + finalText;
 
@@ -92,9 +90,7 @@ export async function handleAgentCommand(
       await interaction.followUp(chunk);
     }
   } catch (err) {
-    await interaction.editReply(
-      `${header}❌ **Error:** ${(err as Error).message}`,
-    );
+    await interaction.editReply(`${header}❌ **Error:** ${(err as Error).message}`);
   }
 }
 
@@ -116,7 +112,8 @@ export async function handleSummarizeCommand(
 ): Promise<void> {
   let goal: string;
   if (target === "status") {
-    goal = "Run git_status and git_log (last 5 commits) and give a brief summary of the current state of the repository.";
+    goal =
+      "Run git_status and git_log (last 5 commits) and give a brief summary of the current state of the repository.";
   } else if (target === "commits") {
     goal = "Show the last 10 commits and summarize what areas of the codebase have been changing recently.";
   } else {

@@ -40,11 +40,7 @@ function textResult(text: string, usage = { inputTokens: 1, outputTokens: 1 }): 
   };
 }
 
-function toolUseResult(
-  toolName: string,
-  input: Record<string, unknown>,
-  id = "toolu_1",
-): CompleteResult {
+function toolUseResult(toolName: string, input: Record<string, unknown>, id = "toolu_1"): CompleteResult {
   return {
     message: { role: "assistant", content: [{ type: "tool_use", id, name: toolName, input }] },
     stopReason: "tool_use",
@@ -117,10 +113,7 @@ test("agent loop executes a tool call and feeds the result back for a second tur
 });
 
 test("agent loop accumulates token usage across iterations", async () => {
-  const provider = new ScriptedProvider([
-    toolUseResult("echo", { text: "x" }),
-    textResult("done"),
-  ]);
+  const provider = new ScriptedProvider([toolUseResult("echo", { text: "x" }), textResult("done")]);
   const registry = new ToolRegistry([echoTool]);
   const history: Message[] = [userText("go")];
 

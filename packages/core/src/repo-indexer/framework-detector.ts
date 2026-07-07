@@ -2,11 +2,27 @@ import { readFile, access } from "node:fs/promises";
 import path from "node:path";
 
 export type FrameworkName =
-  | "nextjs" | "react" | "vue" | "angular" | "svelte"
-  | "express" | "nestjs" | "fastify" | "hono"
-  | "python" | "django" | "flask" | "fastapi"
-  | "go" | "rust" | "java" | "csharp" | "cpp" | "flutter"
-  | "turborepo" | "nx"
+  | "nextjs"
+  | "react"
+  | "vue"
+  | "angular"
+  | "svelte"
+  | "express"
+  | "nestjs"
+  | "fastify"
+  | "hono"
+  | "python"
+  | "django"
+  | "flask"
+  | "fastapi"
+  | "go"
+  | "rust"
+  | "java"
+  | "csharp"
+  | "cpp"
+  | "flutter"
+  | "turborepo"
+  | "nx"
   | "unknown";
 
 export interface DetectedFramework {
@@ -25,18 +41,27 @@ export interface RepoProfile {
 }
 
 async function fileExists(p: string): Promise<boolean> {
-  try { await access(p); return true; } catch { return false; }
+  try {
+    await access(p);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 async function readJsonSafe(p: string): Promise<Record<string, unknown> | null> {
-  try { return JSON.parse(await readFile(p, "utf-8")); } catch { return null; }
+  try {
+    return JSON.parse(await readFile(p, "utf-8"));
+  } catch {
+    return null;
+  }
 }
 
 export async function detectFrameworks(cwd: string): Promise<RepoProfile> {
   const pkg = await readJsonSafe(path.join(cwd, "package.json"));
   const deps = {
-    ...(pkg?.["dependencies"] as Record<string, string> ?? {}),
-    ...(pkg?.["devDependencies"] as Record<string, string> ?? {}),
+    ...((pkg?.["dependencies"] as Record<string, string>) ?? {}),
+    ...((pkg?.["devDependencies"] as Record<string, string>) ?? {}),
   };
 
   const frameworks: DetectedFramework[] = [];
@@ -69,17 +94,19 @@ export async function detectFrameworks(cwd: string): Promise<RepoProfile> {
   }
 
   // ─── Monorepo tools ───────────────────────────────────────────────────────
-  if (deps["turbo"] || await fileExists(path.join(cwd, "turbo.json"))) {
+  if (deps["turbo"] || (await fileExists(path.join(cwd, "turbo.json")))) {
     frameworks.push({ name: "turborepo", confidence: "high", evidence: "turbo.json or turbo dependency" });
   }
-  if (deps["nx"] || await fileExists(path.join(cwd, "nx.json"))) {
+  if (deps["nx"] || (await fileExists(path.join(cwd, "nx.json")))) {
     frameworks.push({ name: "nx", confidence: "high", evidence: "nx.json or nx dependency" });
   }
 
   // ─── Non-JS languages ─────────────────────────────────────────────────────
-  if (await fileExists(path.join(cwd, "requirements.txt")) ||
-      await fileExists(path.join(cwd, "pyproject.toml")) ||
-      await fileExists(path.join(cwd, "setup.py"))) {
+  if (
+    (await fileExists(path.join(cwd, "requirements.txt"))) ||
+    (await fileExists(path.join(cwd, "pyproject.toml"))) ||
+    (await fileExists(path.join(cwd, "setup.py")))
+  ) {
     frameworks.push({ name: "python", confidence: "high", evidence: "requirements.txt / pyproject.toml" });
   }
   if (await fileExists(path.join(cwd, "go.mod"))) {
@@ -88,7 +115,7 @@ export async function detectFrameworks(cwd: string): Promise<RepoProfile> {
   if (await fileExists(path.join(cwd, "Cargo.toml"))) {
     frameworks.push({ name: "rust", confidence: "high", evidence: "Cargo.toml" });
   }
-  if (await fileExists(path.join(cwd, "pom.xml")) || await fileExists(path.join(cwd, "build.gradle"))) {
+  if ((await fileExists(path.join(cwd, "pom.xml"))) || (await fileExists(path.join(cwd, "build.gradle")))) {
     frameworks.push({ name: "java", confidence: "high", evidence: "pom.xml / build.gradle" });
   }
   if (await fileExists(path.join(cwd, "pubspec.yaml"))) {
@@ -103,20 +130,27 @@ export async function detectFrameworks(cwd: string): Promise<RepoProfile> {
   else if (await fileExists(path.join(cwd, "package-lock.json"))) packageManager = "npm";
 
   // ─── Misc detection ───────────────────────────────────────────────────────
-  const hasTypeScript = !!deps["typescript"] || await fileExists(path.join(cwd, "tsconfig.json"));
+  const hasTypeScript = !!deps["typescript"] || (await fileExists(path.join(cwd, "tsconfig.json")));
   const hasTesting = !!(deps["jest"] || deps["vitest"] || deps["mocha"] || deps["@playwright/test"]);
   const isMonorepo = !!(
-    (pkg?.["workspaces"]) ||
-    frameworks.some((f) => f.name === "turborepo" || f.name === "nx")
+    pkg?.["workspaces"] || frameworks.some((f) => f.name === "turborepo" || f.name === "nx")
   );
 
-  const primaryLanguage = frameworks.some((f) => f.name === "python") ? "python"
-    : frameworks.some((f) => f.name === "go") ? "go"
-    : frameworks.some((f) => f.name === "rust") ? "rust"
-    : frameworks.some((f) => f.name === "java") ? "java"
-    : frameworks.some((f) => f.name === "flutter") ? "dart"
-    : pkg ? (hasTypeScript ? "typescript" : "javascript")
-    : "unknown";
+  const primaryLanguage = frameworks.some((f) => f.name === "python")
+    ? "python"
+    : frameworks.some((f) => f.name === "go")
+      ? "go"
+      : frameworks.some((f) => f.name === "rust")
+        ? "rust"
+        : frameworks.some((f) => f.name === "java")
+          ? "java"
+          : frameworks.some((f) => f.name === "flutter")
+            ? "dart"
+            : pkg
+              ? hasTypeScript
+                ? "typescript"
+                : "javascript"
+              : "unknown";
 
   return { frameworks, primaryLanguage, isMonorepo, packageManager, hasTypeScript, hasTesting };
 }

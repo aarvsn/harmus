@@ -49,7 +49,13 @@ export function inferProviderId(modelId: string): string {
   if (modelId.startsWith("gemini-")) return "google";
   if (modelId.startsWith("grok-")) return "xai";
   if (modelId.startsWith("moonshot-")) return "moonshot";
-  if (modelId.startsWith("llama") || modelId.startsWith("mistral") || modelId.startsWith("mixtral") || modelId.startsWith("gemma")) return "groq";
+  if (
+    modelId.startsWith("llama") ||
+    modelId.startsWith("mistral") ||
+    modelId.startsWith("mixtral") ||
+    modelId.startsWith("gemma")
+  )
+    return "groq";
   if (modelId.includes("/")) return "openrouter"; // OpenRouter uses "org/model" format
   return "anthropic"; // safe default
 }

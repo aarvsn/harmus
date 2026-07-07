@@ -50,10 +50,18 @@ export function formatDiff(diff: UnifiedDiff): string {
   const out: string[] = [`--- ${diff.path}`, `+++ ${diff.path}`];
   for (const line of diff.lines) {
     switch (line.type) {
-      case "header":   out.push(line.content); break;
-      case "added":    out.push(`+${line.content}`); break;
-      case "removed":  out.push(`-${line.content}`); break;
-      case "context":  out.push(` ${line.content}`); break;
+      case "header":
+        out.push(line.content);
+        break;
+      case "added":
+        out.push(`+${line.content}`);
+        break;
+      case "removed":
+        out.push(`-${line.content}`);
+        break;
+      case "context":
+        out.push(` ${line.content}`);
+        break;
     }
   }
   return out.join("\n");
@@ -62,7 +70,12 @@ export function formatDiff(diff: UnifiedDiff): string {
 // ─── LCS-based diff algorithm ─────────────────────────────────────────────────
 
 type EditType = "keep" | "add" | "remove";
-interface Edit { type: EditType; beforeIdx?: number; afterIdx?: number; content: string }
+interface Edit {
+  type: EditType;
+  beforeIdx?: number;
+  afterIdx?: number;
+  content: string;
+}
 
 function lcs(before: string[], after: string[]): Edit[] {
   const m = before.length;
@@ -72,19 +85,20 @@ function lcs(before: string[], after: string[]): Edit[] {
   const dp: number[][] = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(0));
   for (let i = 1; i <= m; i++) {
     for (let j = 1; j <= n; j++) {
-      dp[i]![j] = before[i - 1] === after[j - 1]
-        ? dp[i - 1]![j - 1]! + 1
-        : Math.max(dp[i - 1]![j]!, dp[i]![j - 1]!);
+      dp[i]![j] =
+        before[i - 1] === after[j - 1] ? dp[i - 1]![j - 1]! + 1 : Math.max(dp[i - 1]![j]!, dp[i]![j - 1]!);
     }
   }
 
   // Traceback
   const edits: Edit[] = [];
-  let i = m, j = n;
+  let i = m,
+    j = n;
   while (i > 0 || j > 0) {
     if (i > 0 && j > 0 && before[i - 1] === after[j - 1]) {
       edits.push({ type: "keep", beforeIdx: i - 1, afterIdx: j - 1, content: before[i - 1]! });
-      i--; j--;
+      i--;
+      j--;
     } else if (j > 0 && (i === 0 || dp[i]![j - 1]! >= dp[i - 1]![j]!)) {
       edits.push({ type: "add", afterIdx: j - 1, content: after[j - 1]! });
       j--;
@@ -96,7 +110,10 @@ function lcs(before: string[], after: string[]): Edit[] {
   return edits.reverse();
 }
 
-interface Hunk { header: string; lines: DiffLine[] }
+interface Hunk {
+  header: string;
+  lines: DiffLine[];
+}
 
 function buildHunks(edits: Edit[], before: string[], after: string[]): Hunk[] {
   // Find changed edit indices
@@ -116,8 +133,9 @@ function buildHunks(edits: Edit[], before: string[], after: string[]): Hunk[] {
   let rangeStart = -1;
   const sortedChanged = [...changedAt].sort((a, b) => a - b);
   for (const idx of sortedChanged) {
-    if (rangeStart === -1) { rangeStart = idx; }
-    else if (idx > (ranges[ranges.length - 1]?.end ?? -1) + 1) {
+    if (rangeStart === -1) {
+      rangeStart = idx;
+    } else if (idx > (ranges[ranges.length - 1]?.end ?? -1) + 1) {
       ranges.push({ start: rangeStart, end: idx - 1 });
       rangeStart = idx;
     }
@@ -143,7 +161,10 @@ function buildHunks(edits: Edit[], before: string[], after: string[]): Hunk[] {
       return {
         type: edit.type === "keep" ? "context" : edit.type === "add" ? "added" : "removed",
         content: edit.content,
-        lineNo: { before: beforeLineNo !== undefined ? beforeLineNo + 1 : undefined, after: afterLineNo !== undefined ? afterLineNo + 1 : undefined },
+        lineNo: {
+          before: beforeLineNo !== undefined ? beforeLineNo + 1 : undefined,
+          after: afterLineNo !== undefined ? afterLineNo + 1 : undefined,
+        },
       };
     });
 

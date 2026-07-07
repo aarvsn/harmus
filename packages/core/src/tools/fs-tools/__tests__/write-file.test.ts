@@ -86,10 +86,7 @@ test("write_file errors when target path is an existing directory", async () => 
 test("write_file refuses to escape the repo root", async () => {
   const repo = await makeTempRepo();
   try {
-    const result = await writeFileTool.execute(
-      { path: "../escape.txt", content: "x" },
-      buildCtx(repo),
-    );
+    const result = await writeFileTool.execute({ path: "../escape.txt", content: "x" }, buildCtx(repo));
     assert.equal(result.isError, true);
     assert.match(result.content, /outside the repository root/);
   } finally {

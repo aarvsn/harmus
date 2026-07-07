@@ -8,8 +8,14 @@ import { makeTempRepo, cleanupTempRepo, buildCtx } from "../../fs-tools/__tests_
 async function buildSampleTree(repo: string) {
   await mkdir(path.join(repo, "src"), { recursive: true });
   await mkdir(path.join(repo, "node_modules", "dep"), { recursive: true });
-  await writeFile(path.join(repo, "src", "auth.ts"), "export function login(user: string) {\n  return verify(user);\n}\n");
-  await writeFile(path.join(repo, "src", "session.ts"), "export function login(user: string, token: string) {\n  return user + token;\n}\n");
+  await writeFile(
+    path.join(repo, "src", "auth.ts"),
+    "export function login(user: string) {\n  return verify(user);\n}\n",
+  );
+  await writeFile(
+    path.join(repo, "src", "session.ts"),
+    "export function login(user: string, token: string) {\n  return user + token;\n}\n",
+  );
   await writeFile(path.join(repo, "src", "util.ts"), "export const VERSION = '1.0.0';\n");
   await writeFile(path.join(repo, "node_modules", "dep", "index.js"), "function login() { return 'dep'; }\n");
 }
@@ -126,10 +132,7 @@ test("grep_files includes context lines when requested", async () => {
   const repo = await makeTempRepo();
   try {
     await buildSampleTree(repo);
-    const result = await grepFilesTool.execute(
-      { pattern: "verify", contextLines: 1 },
-      buildCtx(repo),
-    );
+    const result = await grepFilesTool.execute({ pattern: "verify", contextLines: 1 }, buildCtx(repo));
     // Line above ("export function login...") and the match line should both appear
     assert.match(result.content, /export function login/);
     assert.match(result.content, /verify/);

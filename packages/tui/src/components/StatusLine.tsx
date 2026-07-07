@@ -21,7 +21,9 @@ export function StatusLine({ mode, model, providerId, isRunning }: StatusLinePro
       <Text dimColor>{model}</Text>
       {isRunning ? (
         <Box marginLeft={1}>
-          <Text color="cyan"><Spinner type="dots" /></Text>
+          <Text color="cyan">
+            <Spinner type="dots" />
+          </Text>
           <Text dimColor> working...</Text>
         </Box>
       ) : null}

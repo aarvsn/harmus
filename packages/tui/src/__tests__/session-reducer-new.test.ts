@@ -3,7 +3,9 @@ import assert from "node:assert/strict";
 import { sessionReducer, createInitialState } from "../session-reducer.js";
 import { _resetLogIdCounterForTests } from "../log-entry.js";
 
-test.beforeEach(() => { _resetLogIdCounterForTests(); });
+test.beforeEach(() => {
+  _resetLogIdCounterForTests();
+});
 
 test("createInitialState accepts providerId as third arg", () => {
   const state = createInitialState("claude-sonnet-4-6", "build", "anthropic");

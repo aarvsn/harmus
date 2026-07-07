@@ -85,7 +85,11 @@ test("end-to-end: OpenAIProvider drives the same agent loop and real fs tools as
       {
         choices: [
           {
-            message: { role: "assistant", content: "Updated the greeting to 'howdy'.", tool_calls: undefined },
+            message: {
+              role: "assistant",
+              content: "Updated the greeting to 'howdy'.",
+              tool_calls: undefined,
+            },
             finish_reason: "stop",
           },
         ],
@@ -131,7 +135,10 @@ test("end-to-end: OpenAI provider also respects plan mode tool-visibility restri
             capturedTools = params.tools;
             return {
               choices: [
-                { message: { role: "assistant", content: "Here's my plan...", tool_calls: undefined }, finish_reason: "stop" },
+                {
+                  message: { role: "assistant", content: "Here's my plan...", tool_calls: undefined },
+                  finish_reason: "stop",
+                },
               ],
               usage: { prompt_tokens: 5, completion_tokens: 5 },
             };

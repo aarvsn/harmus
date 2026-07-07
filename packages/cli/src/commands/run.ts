@@ -101,7 +101,8 @@ export async function runCommand(options: RunCommandOptions): Promise<void> {
       system: SYSTEM_PROMPT(options.mode),
       maxIterations: options.maxIterations,
       onToolStart: (block: any) => printToolStart(block.name, block.input),
-      onToolEnd: (block: any, content: string, isError: boolean) => printToolEnd(block.name, content, isError),
+      onToolEnd: (block: any, content: string, isError: boolean) =>
+        printToolEnd(block.name, content, isError),
     });
 
     for (const message of result.messages) {

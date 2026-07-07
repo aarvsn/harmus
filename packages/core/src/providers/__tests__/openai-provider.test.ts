@@ -47,7 +47,9 @@ test("complete() prepends system prompt as a regular message", async () => {
   const client = mockClient(async (params) => {
     capturedMessages = params.messages;
     return {
-      choices: [{ message: { role: "assistant", content: "hi", tool_calls: undefined }, finish_reason: "stop" }],
+      choices: [
+        { message: { role: "assistant", content: "hi", tool_calls: undefined }, finish_reason: "stop" },
+      ],
       usage: { prompt_tokens: 1, completion_tokens: 1 },
     };
   });
@@ -66,7 +68,12 @@ test("complete() prepends system prompt as a regular message", async () => {
 
 test("complete() translates a plain text response correctly", async () => {
   const client = mockClient(async () => ({
-    choices: [{ message: { role: "assistant", content: "Hello there", tool_calls: undefined }, finish_reason: "stop" }],
+    choices: [
+      {
+        message: { role: "assistant", content: "Hello there", tool_calls: undefined },
+        finish_reason: "stop",
+      },
+    ],
     usage: { prompt_tokens: 10, completion_tokens: 5 },
   }));
 
@@ -119,7 +126,11 @@ test("complete() handles malformed JSON in tool arguments gracefully (empty obje
           role: "assistant",
           content: null,
           tool_calls: [
-            { id: "call_1", type: "function", function: { name: "broken_tool", arguments: "{not valid json" } },
+            {
+              id: "call_1",
+              type: "function",
+              function: { name: "broken_tool", arguments: "{not valid json" },
+            },
           ],
         },
         finish_reason: "tool_calls",
@@ -147,7 +158,9 @@ test("complete() correctly serializes ToolDefinition schemas to function.paramet
   const client = mockClient(async (params) => {
     capturedTools = params.tools;
     return {
-      choices: [{ message: { role: "assistant", content: "ok", tool_calls: undefined }, finish_reason: "stop" }],
+      choices: [
+        { message: { role: "assistant", content: "ok", tool_calls: undefined }, finish_reason: "stop" },
+      ],
       usage: { prompt_tokens: 1, completion_tokens: 1 },
     };
   });
@@ -165,7 +178,9 @@ test("complete() expands a single internal tool message into multiple OpenAI too
   const client = mockClient(async (params) => {
     capturedMessages = params.messages;
     return {
-      choices: [{ message: { role: "assistant", content: "done", tool_calls: undefined }, finish_reason: "stop" }],
+      choices: [
+        { message: { role: "assistant", content: "done", tool_calls: undefined }, finish_reason: "stop" },
+      ],
       usage: { prompt_tokens: 1, completion_tokens: 1 },
     };
   });
@@ -201,7 +216,9 @@ test("complete() expands a single internal tool message into multiple OpenAI too
 
 test("complete() maps finish_reason 'length' to max_tokens", async () => {
   const client = mockClient(async () => ({
-    choices: [{ message: { role: "assistant", content: "trunc", tool_calls: undefined }, finish_reason: "length" }],
+    choices: [
+      { message: { role: "assistant", content: "trunc", tool_calls: undefined }, finish_reason: "length" },
+    ],
     usage: { prompt_tokens: 1, completion_tokens: 1 },
   }));
 
@@ -212,7 +229,12 @@ test("complete() maps finish_reason 'length' to max_tokens", async () => {
 
 test("complete() wraps thrown API errors in ProviderError with retryable flag for 5xx", async () => {
   const OpenAI = (await import("openai")).default;
-  const apiError = new OpenAI.APIError(503, { error: { message: "overloaded" } }, "overloaded", new Headers());
+  const apiError = new OpenAI.APIError(
+    503,
+    { error: { message: "overloaded" } },
+    "overloaded",
+    new Headers(),
+  );
 
   const client = mockClient(async () => {
     throw apiError;
@@ -231,7 +253,9 @@ test("complete() wraps thrown API errors in ProviderError with retryable flag fo
 
 test("complete() handles missing usage data without throwing", async () => {
   const client = mockClient(async () => ({
-    choices: [{ message: { role: "assistant", content: "ok", tool_calls: undefined }, finish_reason: "stop" }],
+    choices: [
+      { message: { role: "assistant", content: "ok", tool_calls: undefined }, finish_reason: "stop" },
+    ],
     usage: undefined,
   }));
 

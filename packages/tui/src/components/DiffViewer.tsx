@@ -19,9 +19,11 @@ export function DiffViewer({ diff, maxLines = 40 }: DiffViewerProps): React.Reac
   return (
     <Box flexDirection="column" marginLeft={1}>
       <Box marginBottom={1}>
-        <Text color="cyan" bold>{diff.path}</Text>
-        <Text color="green">  +{diff.additions}</Text>
-        <Text color="red">  -{diff.deletions}</Text>
+        <Text color="cyan" bold>
+          {diff.path}
+        </Text>
+        <Text color="green"> +{diff.additions}</Text>
+        <Text color="red"> -{diff.deletions}</Text>
       </Box>
 
       {displayLines.map((line, idx) => {
@@ -56,7 +58,9 @@ export function DiffViewer({ diff, maxLines = 40 }: DiffViewerProps): React.Reac
       })}
 
       {truncated && (
-        <Text dimColor>{`... (${diff.lines.length - maxLines} more lines — use git_diff to see full diff)`}</Text>
+        <Text
+          dimColor
+        >{`... (${diff.lines.length - maxLines} more lines — use git_diff to see full diff)`}</Text>
       )}
     </Box>
   );

@@ -205,7 +205,9 @@ function toOpenAIMessage(message: Message): ChatCompletionMessageParam[] {
   }
 
   if (message.role === "assistant") {
-    const textParts = message.content.filter((b): b is Extract<ContentBlock, { type: "text" }> => b.type === "text");
+    const textParts = message.content.filter(
+      (b): b is Extract<ContentBlock, { type: "text" }> => b.type === "text",
+    );
     const toolUseParts = message.content.filter(
       (b): b is Extract<ContentBlock, { type: "tool_use" }> => b.type === "tool_use",
     );

@@ -3,8 +3,8 @@ import path from "node:path";
 import { walkFiles } from "../tools/search-tools/walk.js";
 
 export interface ImportEdge {
-  from: string;     // absolute path
-  to: string;       // absolute path (resolved) or raw specifier for external
+  from: string; // absolute path
+  to: string; // absolute path (resolved) or raw specifier for external
   specifier: string; // raw import string
   isExternal: boolean;
 }
@@ -88,12 +88,22 @@ export async function buildDependencyGraph(cwd: string): Promise<DependencyGraph
 
 async function tryResolve(base: string): Promise<string> {
   const candidates = [
-    `${base}.ts`, `${base}.tsx`, `${base}.js`, `${base}.jsx`,
-    `${base}/index.ts`, `${base}/index.tsx`, `${base}/index.js`,
+    `${base}.ts`,
+    `${base}.tsx`,
+    `${base}.js`,
+    `${base}.jsx`,
+    `${base}/index.ts`,
+    `${base}/index.tsx`,
+    `${base}/index.js`,
   ];
   const { access } = await import("node:fs/promises");
   for (const c of candidates) {
-    try { await access(c); return c; } catch { /* try next */ }
+    try {
+      await access(c);
+      return c;
+    } catch {
+      /* try next */
+    }
   }
   return base;
 }

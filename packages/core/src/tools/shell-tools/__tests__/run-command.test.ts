@@ -18,10 +18,7 @@ test("run_command captures stdout and reports exit code 0", async () => {
 test("run_command captures stderr and a non-zero exit code as an error", async () => {
   const repo = await makeTempRepo();
   try {
-    const result = await runCommandTool.execute(
-      { command: "echo oops 1>&2; exit 3" },
-      buildCtx(repo),
-    );
+    const result = await runCommandTool.execute({ command: "echo oops 1>&2; exit 3" }, buildCtx(repo));
     assert.equal(result.isError, true);
     assert.match(result.content, /oops/);
     assert.match(result.content, /exit code: 3/);
@@ -52,19 +49,20 @@ test("run_command respects the cwd parameter for a subdirectory", async () => {
   }
 });
 
-test("run_command enforces a timeout and kills long-running commands", async () => {
-  const repo = await makeTempRepo();
-  try {
-    const result = await runCommandTool.execute(
-      { command: "sleep 5", timeoutSeconds: 1 },
-      buildCtx(repo),
-    );
-    assert.equal(result.isError, true);
-    assert.match(result.content, /timeout/);
-  } finally {
-    await cleanupTempRepo(repo);
-  }
-}, { timeout: 10_000 });
+test(
+  "run_command enforces a timeout and kills long-running commands",
+  async () => {
+    const repo = await makeTempRepo();
+    try {
+      const result = await runCommandTool.execute({ command: "sleep 5", timeoutSeconds: 1 }, buildCtx(repo));
+      assert.equal(result.isError, true);
+      assert.match(result.content, /timeout/);
+    } finally {
+      await cleanupTempRepo(repo);
+    }
+  },
+  { timeout: 10_000 },
+);
 
 test("run_command is refused in plan mode and does not execute", async () => {
   const repo = await makeTempRepo();
@@ -84,10 +82,7 @@ test("run_command allows arbitrary commands without filtering (trusted model)", 
   const repo = await makeTempRepo();
   try {
     // Demonstrates the "fully trusted" design: no blocklist/allowlist checks.
-    const result = await runCommandTool.execute(
-      { command: "echo first && echo second" },
-      buildCtx(repo),
-    );
+    const result = await runCommandTool.execute({ command: "echo first && echo second" }, buildCtx(repo));
     assert.match(result.content, /first/);
     assert.match(result.content, /second/);
   } finally {

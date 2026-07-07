@@ -20,11 +20,21 @@ export type SessionAction =
   | { type: "agent_start" }
   | { type: "assistant_text"; text: string }
   | { type: "tool_start"; toolCallId: string; toolName: string; input: Record<string, unknown> }
-  | { type: "tool_end"; toolCallId: string; content: string; isError: boolean; diff?: import("@harmus/core").UnifiedDiff }
+  | {
+      type: "tool_end";
+      toolCallId: string;
+      content: string;
+      isError: boolean;
+      diff?: import("@harmus/core").UnifiedDiff;
+    }
   | { type: "system_message"; text: string; level?: "info" | "error" | "warn" }
   | { type: "agent_end" };
 
-export function createInitialState(model: string, mode: AgentMode = "build", providerId = "anthropic"): SessionState {
+export function createInitialState(
+  model: string,
+  mode: AgentMode = "build",
+  providerId = "anthropic",
+): SessionState {
   return { mode, log: [], isRunning: false, model, providerId };
 }
 
@@ -84,7 +94,11 @@ export function sessionReducer(state: SessionState, action: SessionAction): Sess
     case "tool_end": {
       const log = state.log.map((entry): LogEntry => {
         if (entry.type === "tool_call" && entry.id === action.toolCallId) {
-          return { ...entry, result: { content: action.content, isError: action.isError }, ...(action.diff ? { diff: action.diff } : {}) };
+          return {
+            ...entry,
+            result: { content: action.content, isError: action.isError },
+            ...(action.diff ? { diff: action.diff } : {}),
+          };
         }
         return entry;
       });

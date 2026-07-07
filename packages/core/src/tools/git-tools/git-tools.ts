@@ -83,7 +83,10 @@ export const gitLogTool: ToolDefinition<z.infer<typeof GitLogSchema>> = {
 // ─── git_commit ───────────────────────────────────────────────────────────────
 const GitCommitSchema = z.object({
   message: z.string().describe("Commit message"),
-  addAll: z.boolean().optional().describe("Stage all tracked changes before committing (git add -u). Default: true"),
+  addAll: z
+    .boolean()
+    .optional()
+    .describe("Stage all tracked changes before committing (git add -u). Default: true"),
 });
 
 export const gitCommitTool: ToolDefinition<z.infer<typeof GitCommitSchema>> = {
@@ -124,7 +127,10 @@ export const gitBranchTool: ToolDefinition<z.infer<typeof GitBranchSchema>> = {
   schema: GitBranchSchema,
   async execute(input, ctx) {
     if (ctx.mode === "plan" && input.action !== "list") {
-      return { content: "Error: git_branch (create/switch/delete) is unavailable in Plan Mode.", isError: true };
+      return {
+        content: "Error: git_branch (create/switch/delete) is unavailable in Plan Mode.",
+        isError: true,
+      };
     }
     const guard = await guardGit(ctx.cwd);
     if (guard) return { content: guard, isError: true };

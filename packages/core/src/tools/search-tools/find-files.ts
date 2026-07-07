@@ -19,7 +19,7 @@ export const findFilesTool: ToolDefinition<FindFilesInput> = {
   name: "find_files",
   description:
     "Find files by name across the repository (or a subdirectory) without searching contents. " +
-    "Supports simple glob patterns with a leading or trailing *, e.g. \"*.test.ts\" or \"README*\". " +
+    'Supports simple glob patterns with a leading or trailing *, e.g. "*.test.ts" or "README*". ' +
     "Use grep_files instead if you need to search file contents.",
   mutates: false,
   schema: FindFilesSchema,

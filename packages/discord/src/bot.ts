@@ -30,10 +30,7 @@ export async function startBot(): Promise<void> {
   const rest = new REST().setToken(config.botToken);
   try {
     const route = config.guildId
-      ? Routes.applicationGuildCommands(
-          extractClientId(config.botToken),
-          config.guildId,
-        )
+      ? Routes.applicationGuildCommands(extractClientId(config.botToken), config.guildId)
       : Routes.applicationCommands(extractClientId(config.botToken));
 
     await rest.put(route, { body: commands });
@@ -43,11 +40,7 @@ export async function startBot(): Promise<void> {
   }
 
   const client = new Client({
-    intents: [
-      GatewayIntentBits.Guilds,
-      GatewayIntentBits.GuildMessages,
-      GatewayIntentBits.MessageContent,
-    ],
+    intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
   });
 
   client.once(Events.ClientReady, (c) => {
@@ -91,19 +84,11 @@ async function routeCommand(
         break;
 
       case "review":
-        await handleReviewCommand(
-          interaction,
-          interaction.options.getString("ref", true),
-          config,
-        );
+        await handleReviewCommand(interaction, interaction.options.getString("ref", true), config);
         break;
 
       case "summarize":
-        await handleSummarizeCommand(
-          interaction,
-          interaction.options.getString("target", true),
-          config,
-        );
+        await handleSummarizeCommand(interaction, interaction.options.getString("target", true), config);
         break;
 
       case "status":

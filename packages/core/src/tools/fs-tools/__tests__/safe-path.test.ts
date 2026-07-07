@@ -1,18 +1,19 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import path from "node:path";
+import os from "node:os";
 import { resolveSafePath, PathSecurityError } from "../safe-path.js";
 
-const ROOT = "/home/claude/some-repo";
+const ROOT = path.resolve(os.tmpdir(), "some-repo");
 
 test("resolves a simple relative path under root", () => {
   const result = resolveSafePath(ROOT, "src/index.ts");
-  assert.equal(result, path.join(ROOT, "src/index.ts"));
+  assert.equal(result, path.resolve(ROOT, "src/index.ts"));
 });
 
 test("resolves nested relative paths with ./ correctly", () => {
   const result = resolveSafePath(ROOT, "./src/./index.ts");
-  assert.equal(result, path.join(ROOT, "src/index.ts"));
+  assert.equal(result, path.resolve(ROOT, "src/index.ts"));
 });
 
 test("rejects simple ../ traversal escaping the root", () => {
@@ -25,16 +26,19 @@ test("rejects deep traversal that eventually escapes root", () => {
 
 test("allows traversal that stays within root", () => {
   const result = resolveSafePath(ROOT, "src/../lib/index.ts");
-  assert.equal(result, path.join(ROOT, "lib/index.ts"));
+  assert.equal(result, path.resolve(ROOT, "lib/index.ts"));
 });
 
 test("rejects absolute paths outside the root", () => {
-  assert.throws(() => resolveSafePath(ROOT, "/etc/passwd"), PathSecurityError);
+  // Use root of the system to be surely outside
+  const outsidePath = path.resolve(path.parse(ROOT).root, "outside-everything-12345");
+  assert.throws(() => resolveSafePath(ROOT, outsidePath), PathSecurityError);
 });
 
 test("allows absolute paths that are inside the root", () => {
-  const result = resolveSafePath(ROOT, path.join(ROOT, "src/index.ts"));
-  assert.equal(result, path.join(ROOT, "src/index.ts"));
+  const target = path.resolve(ROOT, "src/index.ts");
+  const result = resolveSafePath(ROOT, target);
+  assert.equal(result, target);
 });
 
 test("allows the root itself", () => {

@@ -49,7 +49,7 @@ export async function runCommand(options: RunCommandOptions): Promise<void> {
   let _apiKey: string;
   try {
     _apiKey = requireApiKey(config);
-  } catch (err) {
+  } catch (err: unknown) {
     if (err instanceof ConfigError) {
       printError(err.message);
       process.exitCode = 1;
@@ -100,8 +100,8 @@ export async function runCommand(options: RunCommandOptions): Promise<void> {
       mode: options.mode,
       system: SYSTEM_PROMPT(options.mode),
       maxIterations: options.maxIterations,
-      onToolStart: (block) => printToolStart(block.name, block.input),
-      onToolEnd: (block, content, isError) => printToolEnd(block.name, content, isError),
+      onToolStart: (block: any) => printToolStart(block.name, block.input),
+      onToolEnd: (block: any, content: string, isError: boolean) => printToolEnd(block.name, content, isError),
     });
 
     for (const message of result.messages) {
@@ -123,7 +123,7 @@ export async function runCommand(options: RunCommandOptions): Promise<void> {
       printError("Response was cut off (max tokens reached). Try a narrower request.");
       process.exitCode = 1;
     }
-  } catch (err) {
+  } catch (err: unknown) {
     if (err instanceof ProviderError) {
       printError(`${err.message}${err.retryable ? " (retryable - try again)" : ""}`);
     } else {

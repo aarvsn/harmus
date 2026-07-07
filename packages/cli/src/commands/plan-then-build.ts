@@ -79,8 +79,8 @@ export async function planThenBuild(options: PlanThenBuildOptions): Promise<void
       system: PLAN_SYSTEM,
       tools: new ToolRegistry(ALL_TOOLS),
       maxIterations: options.maxIterations,
-      onToolStart: (block) => printToolStart(block.name, block.input),
-      onToolEnd: (block, content, isError) => printToolEnd(block.name, content, isError),
+      onToolStart: (block: any) => printToolStart(block.name, block.input),
+      onToolEnd: (block: any, content: string, isError: boolean) => printToolEnd(block.name, content, isError),
     });
 
     for (const msg of result.messages) {
@@ -92,7 +92,7 @@ export async function planThenBuild(options: PlanThenBuildOptions): Promise<void
         }
       }
     }
-  } catch (err) {
+  } catch (err: unknown) {
     if (err instanceof ProviderError) { printError(err.message); }
     else { printError((err as Error).message); }
     process.exitCode = 1;

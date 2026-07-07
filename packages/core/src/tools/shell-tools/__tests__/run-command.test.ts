@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import path from "node:path";
+import { realpathSync } from "node:fs";
 import { runCommandTool } from "../run-command.js";
 import { makeTempRepo, cleanupTempRepo, buildCtx } from "../../fs-tools/__tests__/test-helpers.js";
 
@@ -35,12 +36,11 @@ test("run_command captures stderr and a non-zero exit code as an error", async (
 test("run_command runs in the repository root by default", async () => {
   const repo = await makeTempRepo();
   try {
-    // On Windows, 'cd' with no args prints the current directory
     const command = process.platform === "win32" ? "cmd /c cd" : "pwd";
     const result = await runCommandTool.execute({ command }, buildCtx(repo));
-    // Use path.resolve to handle any symlinks/normalization issues
     const actualCwd = result.content.split('\n')[0].trim();
-    assert.equal(path.resolve(actualCwd).toLowerCase(), path.resolve(repo).toLowerCase());
+    // Use realpathSync to resolve /var vs /private/var on macOS
+    assert.equal(realpathSync(actualCwd).toLowerCase(), realpathSync(repo).toLowerCase());
   } finally {
     await cleanupTempRepo(repo);
   }
@@ -56,7 +56,7 @@ test("run_command respects the cwd parameter for a subdirectory", async () => {
     const command = process.platform === "win32" ? "cmd /c cd" : "pwd";
     const result = await runCommandTool.execute({ command, cwd: "subdir" }, buildCtx(repo));
     const actualCwd = result.content.split('\n')[0].trim();
-    assert.equal(path.resolve(actualCwd).toLowerCase(), path.resolve(sub).toLowerCase());
+    assert.equal(realpathSync(actualCwd).toLowerCase(), realpathSync(sub).toLowerCase());
   } finally {
     await cleanupTempRepo(repo);
   }
@@ -65,12 +65,8 @@ test("run_command respects the cwd parameter for a subdirectory", async () => {
 test("run_command enforces a timeout and kills long-running commands", async () => {
   const repo = await makeTempRepo();
   try {
-    // We need a command that actually runs for a while and responds to SIGKILL.
-    // 'sleep' works on Linux. On Windows we'll use powershell.
     const command = process.platform === "win32" ? "powershell -Command Start-Sleep 10" : "sleep 10";
-
     const result = await runCommandTool.execute({ command, timeoutSeconds: 1 }, buildCtx(repo));
-
     assert.equal(result.isError, true);
     assert.match(result.content, /timeout/i);
   } finally {
@@ -103,7 +99,6 @@ test("run_command allows arbitrary commands without filtering (trusted model)", 
 test("run_command reports spawn errors cleanly for a nonexistent shell builtin path", async () => {
   const repo = await makeTempRepo();
   try {
-    // In shell: true mode, the shell usually handles non-existent commands and returns 127 or similar
     const command = "non-existent-command-12345";
     const result = await runCommandTool.execute({ command }, buildCtx(repo));
     assert.equal(result.isError, true);
@@ -116,7 +111,6 @@ test("run_command reports spawn errors cleanly for a nonexistent shell builtin p
 test("run_command truncates very large output", async () => {
   const repo = await makeTempRepo();
   try {
-    // Generate ~300KB of output (MAX_OUTPUT_BYTES is 200,000)
     const command = process.platform === "win32"
       ? "powershell -Command \"1..3000 | ForEach-Object { 'a' * 100 }\""
       : "for i in $(seq 1 3000); do printf 'a%.0s' $(seq 1 100); echo; done";

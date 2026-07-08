@@ -14,7 +14,10 @@ const GrepFilesSchema = z.object({
     .describe('Glob-like suffix filter, e.g. "*.ts" or "*.test.ts", to only search matching files'),
   caseSensitive: z.boolean().optional().describe("Default: false (case-insensitive)"),
   maxResults: z.number().optional().describe("Max number of matching lines to return (default: 200)"),
-  contextLines: z.number().optional().describe("Lines of context to show before/after each match (default: 0)"),
+  contextLines: z
+    .number()
+    .optional()
+    .describe("Lines of context to show before/after each match (default: 0)"),
 });
 
 export type GrepFilesInput = z.infer<typeof GrepFilesSchema>;

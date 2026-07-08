@@ -15,18 +15,18 @@ export interface CommandPaletteProps {
 type Tab = "model" | "provider";
 
 const KNOWN_PROVIDERS = [
-  { id: "anthropic",  label: "Anthropic" },
-  { id: "openai",     label: "OpenAI" },
-  { id: "google",     label: "Google Gemini" },
+  { id: "anthropic", label: "Anthropic" },
+  { id: "openai", label: "OpenAI" },
+  { id: "google", label: "Google Gemini" },
   { id: "openrouter", label: "OpenRouter" },
-  { id: "groq",       label: "Groq" },
-  { id: "together",   label: "Together AI" },
-  { id: "fireworks",  label: "Fireworks AI" },
-  { id: "xai",        label: "xAI" },
-  { id: "nvidia",     label: "NVIDIA NIM" },
-  { id: "moonshot",   label: "Moonshot AI" },
-  { id: "ollama",     label: "Ollama (local)" },
-  { id: "lmstudio",  label: "LM Studio (local)" },
+  { id: "groq", label: "Groq" },
+  { id: "together", label: "Together AI" },
+  { id: "fireworks", label: "Fireworks AI" },
+  { id: "xai", label: "xAI" },
+  { id: "nvidia", label: "NVIDIA NIM" },
+  { id: "moonshot", label: "Moonshot AI" },
+  { id: "ollama", label: "Ollama (local)" },
+  { id: "lmstudio", label: "LM Studio (local)" },
 ];
 
 export function CommandPalette({
@@ -41,30 +41,46 @@ export function CommandPalette({
   const [selectedIdx, setSelectedIdx] = useState(0);
   const { models: liveModels, loading } = useLiveModels();
 
-  const modelIds = liveModels.length > 0
-    ? liveModels.map((m) => m.id)
-    : ["claude-sonnet-4-6", "claude-opus-4-7", "gpt-5-mini", "gemini-2.5-pro", "grok-3", "llama-3.3-70b-versatile"];
+  const modelIds =
+    liveModels.length > 0
+      ? liveModels.map((m) => m.id)
+      : [
+          "claude-sonnet-4-6",
+          "claude-opus-4-7",
+          "gpt-5-mini",
+          "gemini-2.5-pro",
+          "grok-3",
+          "llama-3.3-70b-versatile",
+        ];
 
   const filteredModels = modelIds.filter((m) => m.toLowerCase().includes(query.toLowerCase()));
   const filteredProviders = KNOWN_PROVIDERS.filter(
-    (p) => p.id.toLowerCase().includes(query.toLowerCase()) || p.label.toLowerCase().includes(query.toLowerCase()),
+    (p) =>
+      p.id.toLowerCase().includes(query.toLowerCase()) || p.label.toLowerCase().includes(query.toLowerCase()),
   );
 
   const items = tab === "model" ? filteredModels : filteredProviders.map((p) => p.id);
-  const labels = tab === "model"
-    ? filteredModels
-    : filteredProviders.map((p) => `${p.id} — ${p.label}`);
+  const labels = tab === "model" ? filteredModels : filteredProviders.map((p) => `${p.id} — ${p.label}`);
 
   useInput((_input, key) => {
-    if (key.escape) { onClose(); return; }
+    if (key.escape) {
+      onClose();
+      return;
+    }
     if (key.tab && !key.shift) {
       setTab((t) => (t === "model" ? "provider" : "model"));
       setSelectedIdx(0);
       setQuery("");
       return;
     }
-    if (key.upArrow) { setSelectedIdx((i) => Math.max(0, i - 1)); return; }
-    if (key.downArrow) { setSelectedIdx((i) => Math.min(items.length - 1, i + 1)); return; }
+    if (key.upArrow) {
+      setSelectedIdx((i) => Math.max(0, i - 1));
+      return;
+    }
+    if (key.downArrow) {
+      setSelectedIdx((i) => Math.min(items.length - 1, i + 1));
+      return;
+    }
     if (key.return) {
       const item = items[selectedIdx];
       if (!item) return;
@@ -82,14 +98,18 @@ export function CommandPalette({
   return (
     <Box flexDirection="column" borderStyle="round" borderColor="cyan" paddingX={2} paddingY={1}>
       <Box marginBottom={1}>
-        <Text bold color="cyan">{tab === "model" ? "Select Model" : "Select Provider"}</Text>
+        <Text bold color="cyan">
+          {tab === "model" ? "Select Model" : "Select Provider"}
+        </Text>
         {loading && tab === "model" && (
           <Box marginLeft={1}>
-            <Text color="cyan"><Spinner type="dots" /></Text>
+            <Text color="cyan">
+              <Spinner type="dots" />
+            </Text>
             <Text dimColor> fetching models.dev...</Text>
           </Box>
         )}
-        <Text dimColor>  Tab · ↑↓ · Enter · Esc</Text>
+        <Text dimColor> Tab · ↑↓ · Enter · Esc</Text>
       </Box>
 
       <Box marginBottom={1}>
@@ -104,7 +124,9 @@ export function CommandPalette({
           return (
             <Box key={items[idx] ?? idx}>
               <Text color={isSelected ? "cyan" : isCurrent ? "green" : undefined}>
-                {isSelected ? "▶ " : "  "}{label}{isCurrent ? " ✓" : ""}
+                {isSelected ? "▶ " : "  "}
+                {label}
+                {isCurrent ? " ✓" : ""}
               </Text>
             </Box>
           );

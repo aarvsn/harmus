@@ -11,7 +11,7 @@ test("computeDiff returns isEmpty=true for identical content", () => {
 
 test("computeDiff detects a single line change", () => {
   const before = "const x = 1;\n";
-  const after  = "const x = 2;\n";
+  const after = "const x = 2;\n";
   const diff = computeDiff("a.ts", before, after);
   assert.equal(diff.isEmpty, false);
   assert.equal(diff.additions, 1);
@@ -23,7 +23,7 @@ test("computeDiff detects a single line change", () => {
 
 test("computeDiff detects an added line", () => {
   const before = "line1\nline2\n";
-  const after  = "line1\nnew line\nline2\n";
+  const after = "line1\nnew line\nline2\n";
   const diff = computeDiff("a.ts", before, after);
   assert.equal(diff.additions, 1);
   assert.equal(diff.deletions, 0);
@@ -32,7 +32,7 @@ test("computeDiff detects an added line", () => {
 
 test("computeDiff detects a removed line", () => {
   const before = "line1\nremove me\nline2\n";
-  const after  = "line1\nline2\n";
+  const after = "line1\nline2\n";
   const diff = computeDiff("a.ts", before, after);
   assert.equal(diff.additions, 0);
   assert.equal(diff.deletions, 1);

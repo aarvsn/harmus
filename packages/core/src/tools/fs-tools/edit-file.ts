@@ -45,14 +45,16 @@ export const editFileTool: ToolDefinition<EditFileInput> = {
 
       if (occurrences === 0) {
         return {
-          content: `Error: oldStr was not found in ${input.path}. No changes were made. ` +
+          content:
+            `Error: oldStr was not found in ${input.path}. No changes were made. ` +
             `Double-check whitespace and exact wording, or read the file again to get current content.`,
           isError: true,
         };
       }
       if (occurrences > 1) {
         return {
-          content: `Error: oldStr appears ${occurrences} times in ${input.path}, but must be unique. ` +
+          content:
+            `Error: oldStr appears ${occurrences} times in ${input.path}, but must be unique. ` +
             `Include more surrounding context in oldStr to uniquely identify the location.`,
           isError: true,
         };

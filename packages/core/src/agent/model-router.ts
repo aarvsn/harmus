@@ -30,8 +30,7 @@ export class ModelRouter {
     this.registry = config.registry;
     this.assignments = config.assignments;
     this.defaultModel = config.defaultModel;
-    this.defaultProviderId =
-      config.defaultProviderId ?? inferProviderId(config.defaultModel);
+    this.defaultProviderId = config.defaultProviderId ?? inferProviderId(config.defaultModel);
   }
 
   modelForRole(role: ModelRole): string {
@@ -55,20 +54,14 @@ export class ModelRouter {
   }
 
   /** Convenience: complete for an agent mode directly. */
-  async completeForMode(
-    mode: AgentMode,
-    options: Omit<CompleteOptions, "model">,
-  ): Promise<CompleteResult> {
+  async completeForMode(mode: AgentMode, options: Omit<CompleteOptions, "model">): Promise<CompleteResult> {
     return this.complete(this.roleForMode(mode), options);
   }
 
   summary(): Record<ModelRole, { model: string; provider: string }> {
     const roles: ModelRole[] = ["plan", "build", "chat", "vision", "review", "discord"];
     return Object.fromEntries(
-      roles.map((role) => [
-        role,
-        { model: this.modelForRole(role), provider: this.providerIdForRole(role) },
-      ]),
+      roles.map((role) => [role, { model: this.modelForRole(role), provider: this.providerIdForRole(role) }]),
     ) as Record<ModelRole, { model: string; provider: string }>;
   }
 }

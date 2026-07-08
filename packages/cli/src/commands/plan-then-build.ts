@@ -46,7 +46,11 @@ export async function planThenBuild(options: PlanThenBuildOptions): Promise<void
   try {
     requireApiKey(config);
   } catch (err) {
-    if (err instanceof ConfigError) { printError(err.message); process.exitCode = 1; return; }
+    if (err instanceof ConfigError) {
+      printError(err.message);
+      process.exitCode = 1;
+      return;
+    }
     throw err;
   }
 
@@ -57,12 +61,21 @@ export async function planThenBuild(options: PlanThenBuildOptions): Promise<void
   let assignments: ModelAssignments = {};
   if (options.modelAssignments) assignments = parseModelAssignments(options.modelAssignments);
 
-  const router = new ModelRouter({ registry, assignments, defaultModel: model, defaultProviderId: providerId });
+  const router = new ModelRouter({
+    registry,
+    assignments,
+    defaultModel: model,
+    defaultProviderId: providerId,
+  });
   const planModel = router.modelForRole("plan");
   const planProviderId = router.providerIdForRole("plan");
   const provider = registry.get(planProviderId);
 
-  if (!provider) { printError(`Unknown provider: "${planProviderId}"`); process.exitCode = 1; return; }
+  if (!provider) {
+    printError(`Unknown provider: "${planProviderId}"`);
+    process.exitCode = 1;
+    return;
+  }
 
   printHeader("Planning");
   printModeWarning("plan");
@@ -79,8 +92,9 @@ export async function planThenBuild(options: PlanThenBuildOptions): Promise<void
       system: PLAN_SYSTEM,
       tools: new ToolRegistry(ALL_TOOLS),
       maxIterations: options.maxIterations,
-      onToolStart: (block) => printToolStart(block.name, block.input),
-      onToolEnd: (block, content, isError) => printToolEnd(block.name, content, isError),
+      onToolStart: (block: any) => printToolStart(block.name, block.input),
+      onToolEnd: (block: any, content: string, isError: boolean) =>
+        printToolEnd(block.name, content, isError),
     });
 
     for (const msg of result.messages) {
@@ -92,16 +106,27 @@ export async function planThenBuild(options: PlanThenBuildOptions): Promise<void
         }
       }
     }
-  } catch (err) {
-    if (err instanceof ProviderError) { printError(err.message); }
-    else { printError((err as Error).message); }
+  } catch (err: unknown) {
+    if (err instanceof ProviderError) {
+      printError(err.message);
+    } else {
+      printError((err as Error).message);
+    }
     process.exitCode = 1;
     return;
   }
 
   // Non-interactive / --yes flag: auto-approve
   if (options.yes || !process.stdin.isTTY) {
-    await runCommand({ goal: options.goal, mode: "build", cwd: options.cwd, model: options.model, provider: options.provider, modelAssignments: options.modelAssignments, maxIterations: options.maxIterations });
+    await runCommand({
+      goal: options.goal,
+      mode: "build",
+      cwd: options.cwd,
+      model: options.model,
+      provider: options.provider,
+      modelAssignments: options.modelAssignments,
+      maxIterations: options.maxIterations,
+    });
     return;
   }
 
@@ -110,5 +135,13 @@ export async function planThenBuild(options: PlanThenBuildOptions): Promise<void
   if (approval.decision === "reject") return;
 
   const buildGoal = approval.revisedGoal ?? options.goal;
-  await runCommand({ goal: buildGoal, mode: "build", cwd: options.cwd, model: options.model, provider: options.provider, modelAssignments: options.modelAssignments, maxIterations: options.maxIterations });
+  await runCommand({
+    goal: buildGoal,
+    mode: "build",
+    cwd: options.cwd,
+    model: options.model,
+    provider: options.provider,
+    modelAssignments: options.modelAssignments,
+    maxIterations: options.maxIterations,
+  });
 }

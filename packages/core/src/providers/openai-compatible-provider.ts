@@ -53,10 +53,7 @@ export class OpenAICompatibleProvider implements Provider {
     this.registry = options.modelRegistry ?? new ModelRegistry({ offline: true });
     this.defaultModels = options.defaultModels ?? [];
 
-    const apiKey =
-      options.apiKey ??
-      (options.envVar ? process.env[options.envVar] : undefined) ??
-      "none"; // Ollama/LM Studio don't need a key
+    const apiKey = options.apiKey ?? (options.envVar ? process.env[options.envVar] : undefined) ?? "none"; // Ollama/LM Studio don't need a key
 
     if (options.client) {
       this.client = options.client;
@@ -76,12 +73,7 @@ export class OpenAICompatibleProvider implements Provider {
 
   async complete(options: CompleteOptions): Promise<CompleteResult> {
     if (!this.client) {
-      throw new ProviderError(
-        `${this.name} provider is not configured`,
-        this.id,
-        undefined,
-        false,
-      );
+      throw new ProviderError(`${this.name} provider is not configured`, this.id, undefined, false);
     }
 
     const messages = toOpenAIMessages(options);
@@ -159,12 +151,7 @@ export class OpenAICompatibleProvider implements Provider {
       const retryable = err.status === 429 || (err.status !== undefined && err.status >= 500);
       return new ProviderError(`${this.name} API error: ${err.message}`, this.id, err, retryable);
     }
-    return new ProviderError(
-      `${this.name} provider failed: ${(err as Error).message}`,
-      this.id,
-      err,
-      false,
-    );
+    return new ProviderError(`${this.name} provider failed: ${(err as Error).message}`, this.id, err, false);
   }
 }
 
@@ -172,9 +159,12 @@ export class OpenAICompatibleProvider implements Provider {
 
 function mapFinishReason(reason: string | null): CompleteResult["stopReason"] {
   switch (reason) {
-    case "tool_calls": return "tool_use";
-    case "length": return "max_tokens";
-    default: return "end_turn";
+    case "tool_calls":
+      return "tool_use";
+    case "length":
+      return "max_tokens";
+    default:
+      return "end_turn";
   }
 }
 
@@ -202,7 +192,8 @@ function toOpenAIMessage(message: Message): ChatCompletionMessageParam[] {
   if (message.role === "assistant") {
     const text = message.content
       .filter((b): b is Extract<ContentBlock, { type: "text" }> => b.type === "text")
-      .map((b) => b.text).join("");
+      .map((b) => b.text)
+      .join("");
     const toolCalls: ChatCompletionMessageToolCall[] = message.content
       .filter((b): b is Extract<ContentBlock, { type: "tool_use" }> => b.type === "tool_use")
       .map((b) => ({
@@ -210,15 +201,24 @@ function toOpenAIMessage(message: Message): ChatCompletionMessageParam[] {
         type: "function" as const,
         function: { name: b.name, arguments: JSON.stringify(b.input) },
       }));
-    return [{ role: "assistant", content: text || null, ...(toolCalls.length > 0 ? { tool_calls: toolCalls } : {}) }];
+    return [
+      {
+        role: "assistant",
+        content: text || null,
+        ...(toolCalls.length > 0 ? { tool_calls: toolCalls } : {}),
+      },
+    ];
   }
 
   const parts = message.content
-    .map((block): { type: "text"; text: string } | { type: "image_url"; image_url: { url: string } } | null => {
-      if (block.type === "text") return { type: "text", text: block.text };
-      if (block.type === "image") return { type: "image_url", image_url: { url: `data:${block.mimeType};base64,${block.data}` } };
-      return null;
-    })
+    .map(
+      (block): { type: "text"; text: string } | { type: "image_url"; image_url: { url: string } } | null => {
+        if (block.type === "text") return { type: "text", text: block.text };
+        if (block.type === "image")
+          return { type: "image_url", image_url: { url: `data:${block.mimeType};base64,${block.data}` } };
+        return null;
+      },
+    )
     .filter((p): p is NonNullable<typeof p> => p !== null);
 
   return [{ role: "user", content: parts }];
@@ -230,7 +230,11 @@ function fromOpenAIMessage(message: OpenAI.Chat.Completions.ChatCompletionMessag
   for (const call of message.tool_calls ?? []) {
     if (call.type !== "function") continue;
     let input: Record<string, unknown>;
-    try { input = JSON.parse(call.function.arguments); } catch { input = {}; }
+    try {
+      input = JSON.parse(call.function.arguments);
+    } catch {
+      input = {};
+    }
     blocks.push({ type: "tool_use", id: call.id, name: call.function.name, input });
   }
   return { role: "assistant", content: blocks };

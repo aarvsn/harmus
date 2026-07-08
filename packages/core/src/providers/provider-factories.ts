@@ -130,9 +130,7 @@ export function createLMStudioProvider(baseURL = "http://localhost:1234/v1") {
     providerName: "LM Studio",
     baseURL,
     apiKey: "lmstudio",
-    defaultModels: [
-      staticModel("lmstudio", "local-model", "Currently loaded model", 32_768),
-    ],
+    defaultModels: [staticModel("lmstudio", "local-model", "Currently loaded model", 32_768)],
   });
 }
 

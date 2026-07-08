@@ -23,8 +23,7 @@ export class ConfigError extends Error {
 export function requireApiKey(config: HarmusConfig): string {
   if (!config.anthropicApiKey) {
     throw new ConfigError(
-      "No ANTHROPIC_API_KEY found in the environment.\n" +
-        "Set it with: export ANTHROPIC_API_KEY=sk-ant-...",
+      "No ANTHROPIC_API_KEY found in the environment.\n" + "Set it with: export ANTHROPIC_API_KEY=sk-ant-...",
     );
   }
   return config.anthropicApiKey;

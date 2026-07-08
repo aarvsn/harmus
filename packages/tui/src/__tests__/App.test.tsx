@@ -14,8 +14,12 @@ class ScriptedProvider implements Provider {
   readonly name = "Fake";
   private idx = 0;
   constructor(private readonly responses: CompleteResult[]) {}
-  isConfigured() { return true; }
-  async listModels(): Promise<ModelInfo[]> { return []; }
+  isConfigured() {
+    return true;
+  }
+  async listModels(): Promise<ModelInfo[]> {
+    return [];
+  }
   async complete(_opts: CompleteOptions): Promise<CompleteResult> {
     const r = this.responses[this.idx++];
     if (!r) throw new Error("ScriptedProvider ran out of responses");
@@ -44,27 +48,42 @@ const FAKE_CWD = "/tmp";
 // --- Static rendering tests (no stdin interaction needed) ---
 
 test("App renders the Harmus header on startup", (t) => {
-  const { lastFrame } = renderForTest(t, <App provider={new ScriptedProvider([])} model="fake-model" cwd={FAKE_CWD} />);
+  const { lastFrame } = renderForTest(
+    t,
+    <App provider={new ScriptedProvider([])} model="fake-model" cwd={FAKE_CWD} />,
+  );
   assert.match(lastFrame()!, /Harmus/);
 });
 
 test("App shows BUILD mode label by default", (t) => {
-  const { lastFrame } = renderForTest(t, <App provider={new ScriptedProvider([])} model="fake-model" cwd={FAKE_CWD} />);
+  const { lastFrame } = renderForTest(
+    t,
+    <App provider={new ScriptedProvider([])} model="fake-model" cwd={FAKE_CWD} />,
+  );
   assert.match(lastFrame()!, /BUILD/);
 });
 
 test("App shows PLAN mode label when initialMode is plan", (t) => {
-  const { lastFrame } = renderForTest(t, <App provider={new ScriptedProvider([])} model="fake-model" cwd={FAKE_CWD} initialMode="plan" />);
+  const { lastFrame } = renderForTest(
+    t,
+    <App provider={new ScriptedProvider([])} model="fake-model" cwd={FAKE_CWD} initialMode="plan" />,
+  );
   assert.match(lastFrame()!, /PLAN/);
 });
 
 test("App displays the model name in the status line", (t) => {
-  const { lastFrame } = renderForTest(t, <App provider={new ScriptedProvider([])} model="claude-sonnet-4-6" cwd={FAKE_CWD} />);
+  const { lastFrame } = renderForTest(
+    t,
+    <App provider={new ScriptedProvider([])} model="claude-sonnet-4-6" cwd={FAKE_CWD} />,
+  );
   assert.match(lastFrame()!, /claude-sonnet-4-6/);
 });
 
 test("App shows keyboard shortcut hint", (t) => {
-  const { lastFrame } = renderForTest(t, <App provider={new ScriptedProvider([])} model="fake-model" cwd={FAKE_CWD} />);
+  const { lastFrame } = renderForTest(
+    t,
+    <App provider={new ScriptedProvider([])} model="fake-model" cwd={FAKE_CWD} />,
+  );
   assert.match(lastFrame()!, /Ctrl\+C/);
 });
 
@@ -72,7 +91,10 @@ test("App shows keyboard shortcut hint", (t) => {
 
 test("App renders user message and assistant reply after a submitted turn", async (t) => {
   const provider = new ScriptedProvider([textResult("I will help you with that.")]);
-  const { lastFrame, stdin } = renderForTest(t, <App provider={provider} model="fake-model" cwd={FAKE_CWD} />);
+  const { lastFrame, stdin } = renderForTest(
+    t,
+    <App provider={provider} model="fake-model" cwd={FAKE_CWD} />,
+  );
 
   await settle(100);
   stdin.write("list the files");
@@ -90,7 +112,10 @@ test("App renders tool calls inline during a multi-turn response", async (t) => 
     toolUseResult("list_directory", { path: "." }, "toolu_1"),
     textResult("The project has a src/ directory."),
   ]);
-  const { lastFrame, stdin } = renderForTest(t, <App provider={provider} model="fake-model" cwd={FAKE_CWD} />);
+  const { lastFrame, stdin } = renderForTest(
+    t,
+    <App provider={provider} model="fake-model" cwd={FAKE_CWD} />,
+  );
 
   await settle(100);
   stdin.write("what files are there");
@@ -106,12 +131,22 @@ test("App renders tool calls inline during a multi-turn response", async (t) => 
 
 test("App shows error message when provider throws", async (t) => {
   class FailingProvider implements Provider {
-    readonly id = "fail"; readonly name = "Fail";
-    isConfigured() { return true; }
-    async listModels(): Promise<ModelInfo[]> { return []; }
-    async complete(): Promise<CompleteResult> { throw new Error("API unavailable"); }
+    readonly id = "fail";
+    readonly name = "Fail";
+    isConfigured() {
+      return true;
+    }
+    async listModels(): Promise<ModelInfo[]> {
+      return [];
+    }
+    async complete(): Promise<CompleteResult> {
+      throw new Error("API unavailable");
+    }
   }
-  const { lastFrame, stdin } = renderForTest(t, <App provider={new FailingProvider()} model="fake-model" cwd={FAKE_CWD} />);
+  const { lastFrame, stdin } = renderForTest(
+    t,
+    <App provider={new FailingProvider()} model="fake-model" cwd={FAKE_CWD} />,
+  );
 
   await settle(100);
   stdin.write("do something");
@@ -124,7 +159,10 @@ test("App shows error message when provider throws", async (t) => {
 
 test("App clears the input box after submit", async (t) => {
   const provider = new ScriptedProvider([textResult("Done.")]);
-  const { lastFrame, stdin } = renderForTest(t, <App provider={provider} model="fake-model" cwd={FAKE_CWD} />);
+  const { lastFrame, stdin } = renderForTest(
+    t,
+    <App provider={provider} model="fake-model" cwd={FAKE_CWD} />,
+  );
 
   await settle(100);
   stdin.write("do something");
@@ -140,11 +178,11 @@ test("App clears the input box after submit", async (t) => {
 });
 
 test("App preserves conversation history across multiple turns", async (t) => {
-  const provider = new ScriptedProvider([
-    textResult("First answer."),
-    textResult("Second answer."),
-  ]);
-  const { lastFrame, stdin } = renderForTest(t, <App provider={provider} model="fake-model" cwd={FAKE_CWD} />);
+  const provider = new ScriptedProvider([textResult("First answer."), textResult("Second answer.")]);
+  const { lastFrame, stdin } = renderForTest(
+    t,
+    <App provider={provider} model="fake-model" cwd={FAKE_CWD} />,
+  );
 
   await settle(100);
   stdin.write("first question");

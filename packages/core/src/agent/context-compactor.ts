@@ -82,7 +82,8 @@ export async function compactHistory(
         .map((b) => {
           if (b.type === "text") return b.text;
           if (b.type === "tool_use") return `[Tool: ${b.name}(${JSON.stringify(b.input)})]`;
-          if (b.type === "tool_result") return `[Result: ${b.content.slice(0, 500)}${b.content.length > 500 ? "..." : ""}]`;
+          if (b.type === "tool_result")
+            return `[Result: ${b.content.slice(0, 500)}${b.content.length > 500 ? "..." : ""}]`;
           return "";
         })
         .filter(Boolean)
@@ -125,10 +126,7 @@ export async function compactHistory(
  * is needed and, if so, replaces the history array contents in place
  * (so callers keeping a reference to the same array stay in sync).
  */
-export async function maybeCompact(
-  history: Message[],
-  options: CompactionOptions,
-): Promise<string | null> {
+export async function maybeCompact(history: Message[], options: CompactionOptions): Promise<string | null> {
   const { compacted, summary, wasCompacted } = await compactHistory(history, options);
   if (!wasCompacted) return null;
 

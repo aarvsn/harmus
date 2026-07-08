@@ -15,7 +15,13 @@ export interface InputBarProps {
  * convention) rather than the spec's Ctrl+Shift+P, since Shift+Tab doesn't
  * collide with terminal-emulator or OS-level shortcuts.
  */
-export function InputBar({ value, onChange, onSubmit, onToggleMode, disabled }: InputBarProps): React.ReactElement {
+export function InputBar({
+  value,
+  onChange,
+  onSubmit,
+  onToggleMode,
+  disabled,
+}: InputBarProps): React.ReactElement {
   useInput((_input, key) => {
     if (key.tab && key.shift) {
       onToggleMode();

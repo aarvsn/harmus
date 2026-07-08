@@ -126,7 +126,12 @@ test("complete() correctly serializes ToolDefinition schemas to input_schema", a
 
 test("complete() wraps thrown errors in ProviderError with retryable flag for 5xx", async () => {
   const Anthropic = (await import("@anthropic-ai/sdk")).default;
-  const apiError = new Anthropic.APIError(503, { error: { message: "overloaded" } }, "overloaded", new Headers());
+  const apiError = new Anthropic.APIError(
+    503,
+    { error: { message: "overloaded" } },
+    "overloaded",
+    new Headers(),
+  );
 
   const client = mockClient(async () => {
     throw apiError;

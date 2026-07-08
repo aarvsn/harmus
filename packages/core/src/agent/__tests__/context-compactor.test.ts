@@ -11,7 +11,8 @@ function textMsg(role: "user" | "assistant", text: string): Message {
 
 function makeProvider(summaryText: string): Provider {
   return {
-    id: "fake", name: "Fake",
+    id: "fake",
+    name: "Fake",
     isConfigured: () => true,
     listModels: async (): Promise<ModelInfo[]> => [],
     complete: async (_opts: CompleteOptions): Promise<CompleteResult> => ({
@@ -35,7 +36,10 @@ test("estimateTokens approximates token count from char count", () => {
 
 test("estimateTokens counts tool_use and tool_result blocks", () => {
   const msgs: Message[] = [
-    { role: "assistant", content: [{ type: "tool_use", id: "t1", name: "read_file", input: { path: "a.ts" } }] },
+    {
+      role: "assistant",
+      content: [{ type: "tool_use", id: "t1", name: "read_file", input: { path: "a.ts" } }],
+    },
     { role: "tool", content: [{ type: "tool_result", toolUseId: "t1", content: "x".repeat(400) }] },
   ];
   const tokens = estimateTokens(msgs);

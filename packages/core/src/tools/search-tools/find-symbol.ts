@@ -15,8 +15,15 @@ export interface SymbolMatch {
 }
 
 export type SymbolKind =
-  | "function" | "class" | "interface" | "type" | "enum"
-  | "const" | "let" | "var" | "export";
+  | "function"
+  | "class"
+  | "interface"
+  | "type"
+  | "enum"
+  | "const"
+  | "let"
+  | "var"
+  | "export";
 
 /**
  * Language-agnostic symbol patterns. These intentionally cast a wide net —
@@ -24,26 +31,33 @@ export type SymbolKind =
  */
 const SYMBOL_PATTERNS: Array<{ kind: SymbolKind; re: RegExp }> = [
   { kind: "function", re: /^\s*(?:export\s+)?(?:async\s+)?function\s+([A-Za-z_$][A-Za-z0-9_$]*)/ },
-  { kind: "function", re: /^\s*(?:export\s+)?(?:const|let)\s+([A-Za-z_$][A-Za-z0-9_$]*)\s*=\s*(?:async\s+)?\(/ },
-  { kind: "function", re: /^\s*(?:public|private|protected|static|async)*\s+([A-Za-z_$][A-Za-z0-9_$]*)\s*\([^)]*\)\s*(?::\s*\S+\s*)?\{/ },
-  { kind: "class",     re: /^\s*(?:export\s+)?(?:abstract\s+)?class\s+([A-Za-z_$][A-Za-z0-9_$]*)/ },
+  {
+    kind: "function",
+    re: /^\s*(?:export\s+)?(?:const|let)\s+([A-Za-z_$][A-Za-z0-9_$]*)\s*=\s*(?:async\s+)?\(/,
+  },
+  {
+    kind: "function",
+    re: /^\s*(?:public|private|protected|static|async)*\s+([A-Za-z_$][A-Za-z0-9_$]*)\s*\([^)]*\)\s*(?::\s*\S+\s*)?\{/,
+  },
+  { kind: "class", re: /^\s*(?:export\s+)?(?:abstract\s+)?class\s+([A-Za-z_$][A-Za-z0-9_$]*)/ },
   { kind: "interface", re: /^\s*(?:export\s+)?interface\s+([A-Za-z_$][A-Za-z0-9_$]*)/ },
-  { kind: "type",      re: /^\s*(?:export\s+)?type\s+([A-Za-z_$][A-Za-z0-9_$]*)\s*[=<]/ },
-  { kind: "enum",      re: /^\s*(?:export\s+)?(?:const\s+)?enum\s+([A-Za-z_$][A-Za-z0-9_$]*)/ },
-  { kind: "const",     re: /^\s*(?:export\s+)?const\s+([A-Za-z_$][A-Za-z0-9_$]*)\s*[:=]/ },
+  { kind: "type", re: /^\s*(?:export\s+)?type\s+([A-Za-z_$][A-Za-z0-9_$]*)\s*[=<]/ },
+  { kind: "enum", re: /^\s*(?:export\s+)?(?:const\s+)?enum\s+([A-Za-z_$][A-Za-z0-9_$]*)/ },
+  { kind: "const", re: /^\s*(?:export\s+)?const\s+([A-Za-z_$][A-Za-z0-9_$]*)\s*[:=]/ },
 ];
 
 const JS_TS_EXTS = new Set([".ts", ".tsx", ".js", ".jsx", ".mjs"]);
-const PY_EXTS    = new Set([".py"]);
+const PY_EXTS = new Set([".py"]);
 
 const PYTHON_PATTERNS: Array<{ kind: SymbolKind; re: RegExp }> = [
   { kind: "function", re: /^(?:async\s+)?def\s+([A-Za-z_][A-Za-z0-9_]*)/ },
-  { kind: "class",    re: /^class\s+([A-Za-z_][A-Za-z0-9_]*)/ },
+  { kind: "class", re: /^class\s+([A-Za-z_][A-Za-z0-9_]*)/ },
 ];
 
 const FindSymbolSchema = z.object({
   name: z.string().describe("Symbol name to search for (substring match, case-insensitive)"),
-  kind: z.enum(["function", "class", "interface", "type", "enum", "const", "any"])
+  kind: z
+    .enum(["function", "class", "interface", "type", "enum", "const", "any"])
     .optional()
     .describe("Filter by symbol kind (default: any)"),
   path: z.string().optional().describe("Directory to search within (default: repo root)"),
@@ -72,11 +86,7 @@ export const findSymbolTool: ToolDefinition<FindSymbolInput> = {
       for await (const filePath of walkFiles(searchRoot)) {
         if (matches.length >= maxResults) break;
         const ext = path.extname(filePath);
-        const patterns = JS_TS_EXTS.has(ext)
-          ? SYMBOL_PATTERNS
-          : PY_EXTS.has(ext)
-          ? PYTHON_PATTERNS
-          : null;
+        const patterns = JS_TS_EXTS.has(ext) ? SYMBOL_PATTERNS : PY_EXTS.has(ext) ? PYTHON_PATTERNS : null;
 
         if (!patterns) continue;
 
@@ -107,13 +117,12 @@ export const findSymbolTool: ToolDefinition<FindSymbolInput> = {
         return { content: `No symbols matching "${input.name}" found` };
       }
 
-      const lines = matches.map(
-        (m) => `${m.file}:${m.line}  [${m.kind}] ${m.name}\n    ${m.declaration}`,
-      );
+      const lines = matches.map((m) => `${m.file}:${m.line}  [${m.kind}] ${m.name}\n    ${m.declaration}`);
 
-      const header = matches.length >= maxResults
-        ? `First ${maxResults} symbol matches for "${input.name}":\n`
-        : `${matches.length} symbol(s) matching "${input.name}":\n`;
+      const header =
+        matches.length >= maxResults
+          ? `First ${maxResults} symbol matches for "${input.name}":\n`
+          : `${matches.length} symbol(s) matching "${input.name}":\n`;
 
       return { content: header + lines.join("\n") };
     } catch (err) {

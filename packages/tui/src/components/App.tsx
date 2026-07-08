@@ -40,10 +40,7 @@ export function App({
   providerId = "anthropic",
 }: AppProps): React.ReactElement {
   const { exit } = useApp();
-  const [state, dispatch] = useReducer(
-    sessionReducer,
-    createInitialState(model, initialMode, providerId),
-  );
+  const [state, dispatch] = useReducer(sessionReducer, createInitialState(model, initialMode, providerId));
   const [inputValue, setInputValue] = useState("");
   const [showPalette, setShowPalette] = useState(false);
 
@@ -51,8 +48,14 @@ export function App({
   const toolRegistryRef = useRef(new ToolRegistry(ALL_TOOLS));
 
   useInput((input, key) => {
-    if (key.ctrl && input === "c") { exit(); return; }
-    if (key.ctrl && input === "k") { if (!state.isRunning) setShowPalette((v) => !v); return; }
+    if (key.ctrl && input === "c") {
+      exit();
+      return;
+    }
+    if (key.ctrl && input === "k") {
+      if (!state.isRunning) setShowPalette((v) => !v);
+      return;
+    }
     if (key.ctrl && input === "l") {
       if (!state.isRunning) {
         historyRef.current.splice(0);
@@ -145,7 +148,9 @@ export function App({
   return (
     <Box flexDirection="column">
       <Box marginBottom={1}>
-        <Text bold color="cyan">Harmus</Text>
+        <Text bold color="cyan">
+          Harmus
+        </Text>
         <Text dimColor> — autonomous coding agent</Text>
       </Box>
 

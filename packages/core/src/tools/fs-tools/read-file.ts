@@ -36,7 +36,10 @@ export const readFileTool: ToolDefinition<ReadFileInput> = {
       const end = input.endLine ? Math.min(lines.length, input.endLine) : lines.length;
 
       if (start > lines.length) {
-        return { content: `Error: startLine ${start} is beyond end of file (${lines.length} lines)`, isError: true };
+        return {
+          content: `Error: startLine ${start} is beyond end of file (${lines.length} lines)`,
+          isError: true,
+        };
       }
 
       const numbered = lines

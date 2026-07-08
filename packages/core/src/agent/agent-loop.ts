@@ -90,9 +90,7 @@ export async function runAgentLoop(
       };
     }
 
-    const toolUseBlocks = result.message.content.filter(
-      (b): b is ToolUseBlock => b.type === "tool_use",
-    );
+    const toolUseBlocks = result.message.content.filter((b): b is ToolUseBlock => b.type === "tool_use");
 
     if (toolUseBlocks.length === 0) {
       // Plain end_turn with no further tool calls - the agent is done for this run.

@@ -35,9 +35,7 @@ export class ProviderRegistry {
   }
 
   async listAllModels(): Promise<ModelInfo[]> {
-    const results = await Promise.allSettled(
-      this.configured().map((p) => p.listModels()),
-    );
+    const results = await Promise.allSettled(this.configured().map((p) => p.listModels()));
     return results
       .filter((r): r is PromiseFulfilledResult<ModelInfo[]> => r.status === "fulfilled")
       .flatMap((r) => r.value);
@@ -57,10 +55,7 @@ export class ProviderRegistry {
       throw new ProviderError(`No provider registered with id "${providerId}"`, providerId);
     }
     if (!provider.isConfigured()) {
-      throw new ProviderError(
-        `Provider "${providerId}" is not configured (missing API key?)`,
-        providerId,
-      );
+      throw new ProviderError(`Provider "${providerId}" is not configured (missing API key?)`, providerId);
     }
     return withRetry(() => provider.complete(options), retryOptions);
   }
@@ -89,20 +84,14 @@ export class ProviderRegistry {
         }
       }
     }
-    throw new ProviderError(
-      `All providers failed:\n${errors.join("\n")}`,
-      providerIds[0] ?? "unknown",
-    );
+    throw new ProviderError(`All providers failed:\n${errors.join("\n")}`, providerIds[0] ?? "unknown");
   }
 }
 
 const DEFAULT_MAX_RETRIES = 3;
 const DEFAULT_INITIAL_DELAY_MS = 500;
 
-async function withRetry<T>(
-  fn: () => Promise<T>,
-  options: RetryOptions,
-): Promise<T> {
+async function withRetry<T>(fn: () => Promise<T>, options: RetryOptions): Promise<T> {
   const maxRetries = options.maxRetries ?? DEFAULT_MAX_RETRIES;
   const initialDelay = options.initialDelayMs ?? DEFAULT_INITIAL_DELAY_MS;
 

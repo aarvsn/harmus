@@ -15,7 +15,8 @@ function okResult(text: string): CompleteResult {
 
 function makeProvider(id: string, onComplete: (model: string) => CompleteResult): Provider {
   return {
-    id, name: id,
+    id,
+    name: id,
     isConfigured: () => true,
     listModels: async (): Promise<ModelInfo[]> => [],
     complete: async (opts: CompleteOptions) => onComplete(opts.model),

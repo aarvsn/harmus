@@ -25,7 +25,13 @@ test("MessageList renders user and assistant entries in order", (t) => {
 test("MessageList renders tool calls inline between messages", (t) => {
   const log: LogEntry[] = [
     { type: "user", id: "u1", text: "search for TODO" },
-    { type: "tool_call", id: "t1", toolName: "grep_files", input: { pattern: "TODO" }, result: { content: "found 3", isError: false } },
+    {
+      type: "tool_call",
+      id: "t1",
+      toolName: "grep_files",
+      input: { pattern: "TODO" },
+      result: { content: "found 3", isError: false },
+    },
     { type: "assistant_text", id: "a1", text: "Found 3 TODOs." },
   ];
   const { lastFrame } = renderForTest(t, <MessageList log={log} />);
@@ -36,9 +42,7 @@ test("MessageList renders tool calls inline between messages", (t) => {
 });
 
 test("MessageList renders system messages", (t) => {
-  const log: LogEntry[] = [
-    { type: "system", id: "s1", text: "Session started", level: "info" },
-  ];
+  const log: LogEntry[] = [{ type: "system", id: "s1", text: "Session started", level: "info" }];
   const { lastFrame } = renderForTest(t, <MessageList log={log} />);
   assert.match(lastFrame()!, /Session started/);
 });

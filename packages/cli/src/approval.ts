@@ -17,10 +17,7 @@ export interface ApprovalResult {
  *
  * Returns the user's decision so the CLI caller can decide what to do next.
  */
-export async function promptApproval(
-  originalGoal: string,
-  planText: string,
-): Promise<ApprovalResult> {
+export async function promptApproval(originalGoal: string, planText: string): Promise<ApprovalResult> {
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout,
@@ -34,9 +31,12 @@ export async function promptApproval(
     while (true) {
       const answer = await rl.question(
         chalk.bold("Proceed? ") +
-        chalk.green("[a]pprove") + " / " +
-        chalk.yellow("[e]dit goal") + " / " +
-        chalk.red("[r]eject") + " > ",
+          chalk.green("[a]pprove") +
+          " / " +
+          chalk.yellow("[e]dit goal") +
+          " / " +
+          chalk.red("[r]eject") +
+          " > ",
       );
 
       const trimmed = answer.trim().toLowerCase();
@@ -51,9 +51,7 @@ export async function promptApproval(
       }
 
       if (trimmed === "e" || trimmed === "edit") {
-        const revised = await rl.question(
-          chalk.bold("Revised goal: "),
-        );
+        const revised = await rl.question(chalk.bold("Revised goal: "));
         const revisedGoal = revised.trim() || originalGoal;
         console.log(chalk.dim(`Will build: "${revisedGoal}"`));
         return { decision: "edit", revisedGoal };

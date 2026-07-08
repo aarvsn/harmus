@@ -84,7 +84,10 @@ function isOptional(schema: z.ZodType): boolean {
 }
 
 /** Attach a description to the top-level schema in its JSON Schema output, if not already present. */
-export function withDescription(jsonSchema: Record<string, unknown>, description: string): Record<string, unknown> {
+export function withDescription(
+  jsonSchema: Record<string, unknown>,
+  description: string,
+): Record<string, unknown> {
   if (jsonSchema.description) return jsonSchema;
   return { ...jsonSchema, description };
 }

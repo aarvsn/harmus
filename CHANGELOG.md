@@ -1,3 +1,13 @@
+# 1.0.0 (2026-07-08)
+
+
+### Bug Fixes
+
+* comprehensive CI stability and cross-platform fixes ([41944ba](https://github.com/aarvsn/harmus/commit/41944ba5ca4ace6ae12c4d07d5508c4cda4ca355))
+* comprehensive CI stability, TypeScript, security, and test fixes ([77011e4](https://github.com/aarvsn/harmus/commit/77011e4c908694e619c6326455c45d3d3a65a26b)), closes [hi#severity](https://github.com/hi/issues/severity)
+* resolve all CI failures, TS errors, and security vulnerabilities ([cf7b483](https://github.com/aarvsn/harmus/commit/cf7b4830ab571f95943c8c23de6feb9149191da9)), closes [hi#severity](https://github.com/hi/issues/severity)
+* resolve CI failures and TypeScript strict mode errors ([4d4b9d1](https://github.com/aarvsn/harmus/commit/4d4b9d1284393a207d97e1e815e586766ab444ab))
+
 # Changelog
 
 All notable changes to Harmus are documented here.

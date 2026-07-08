@@ -1,6 +1,6 @@
 {
   "name": "@harmus/tui",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Terminal UI for Harmus — autonomous coding agent",
   "type": "module",
   "bin": {
@@ -13,11 +13,23 @@
     "directory": "packages/tui"
   },
   "homepage": "https://github.com/aarvsn/harmus",
-  "bugs": { "url": "https://github.com/aarvsn/harmus/issues" },
-  "author": { "name": "aarvsn", "url": "https://github.com/aarvsn" },
+  "bugs": {
+    "url": "https://github.com/aarvsn/harmus/issues"
+  },
+  "author": {
+    "name": "aarvsn",
+    "url": "https://github.com/aarvsn"
+  },
   "license": "MIT",
   "keywords": [
-    "ai", "agent", "tui", "terminal", "ink", "cli", "llm", "autonomous"
+    "ai",
+    "agent",
+    "tui",
+    "terminal",
+    "ink",
+    "cli",
+    "llm",
+    "autonomous"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",

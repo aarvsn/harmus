@@ -1,6 +1,6 @@
 {
   "name": "@harmus/cli",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Command-line interface for Harmus — autonomous coding agent",
   "type": "module",
   "bin": {
@@ -13,12 +13,25 @@
     "directory": "packages/cli"
   },
   "homepage": "https://github.com/aarvsn/harmus",
-  "bugs": { "url": "https://github.com/aarvsn/harmus/issues" },
-  "author": { "name": "aarvsn", "url": "https://github.com/aarvsn" },
+  "bugs": {
+    "url": "https://github.com/aarvsn/harmus/issues"
+  },
+  "author": {
+    "name": "aarvsn",
+    "url": "https://github.com/aarvsn"
+  },
   "license": "MIT",
   "keywords": [
-    "ai", "agent", "coding-agent", "cli", "terminal", "llm",
-    "anthropic", "openai", "autonomous", "typescript"
+    "ai",
+    "agent",
+    "coding-agent",
+    "cli",
+    "terminal",
+    "llm",
+    "anthropic",
+    "openai",
+    "autonomous",
+    "typescript"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",

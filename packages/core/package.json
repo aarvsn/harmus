@@ -1,6 +1,6 @@
 {
   "name": "@harmus/core",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Provider abstraction, tool execution engine, and agent runtime for Harmus",
   "type": "module",
   "main": "./dist/index.js",
@@ -17,12 +17,25 @@
     "directory": "packages/core"
   },
   "homepage": "https://github.com/aarvsn/harmus",
-  "bugs": { "url": "https://github.com/aarvsn/harmus/issues" },
-  "author": { "name": "aarvsn", "url": "https://github.com/aarvsn" },
+  "bugs": {
+    "url": "https://github.com/aarvsn/harmus/issues"
+  },
+  "author": {
+    "name": "aarvsn",
+    "url": "https://github.com/aarvsn"
+  },
   "license": "MIT",
   "keywords": [
-    "ai", "agent", "coding-agent", "llm", "anthropic", "openai",
-    "autonomous", "typescript", "terminal", "cli"
+    "ai",
+    "agent",
+    "coding-agent",
+    "llm",
+    "anthropic",
+    "openai",
+    "autonomous",
+    "typescript",
+    "terminal",
+    "cli"
   ],
   "scripts": {
     "build": "tsc -p tsconfig.json",

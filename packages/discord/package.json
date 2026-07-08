@@ -1,6 +1,6 @@
 {
   "name": "@harmus/discord",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Discord bot for Harmus — autonomous coding agent",
   "type": "module",
   "bin": {
